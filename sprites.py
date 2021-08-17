@@ -2,16 +2,24 @@ import pygame as pg
 from settings import *
 from tmath import *
 from perlin import *
+#from main import n_boat
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self._layer = 2 # fg 
         self.groups = game.all_sprites
+        self.n_boat = pg.image.load('n_boat.png').convert_alpha()
+        self.s_boat = pg.image.load('s_boat.png').convert_alpha()
+        self.e_boat = pg.image.load('e_boat.png').convert_alpha()
+        self.w_boat = pg.image.load('w_boat.png').convert_alpha()
+
+        self.image = self.n_boat
+        self.rect = self.image.get_rect(center=(x,y))
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(WHITE)
-        self.rect = self.image.get_rect()
+        #self.image = pg.Surface((TILESIZE, TILESIZE))
+        #self.image.fill(WHITE)
+        #self.rect = self.image.get_rect()
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
@@ -21,12 +29,16 @@ class Player(pg.sprite.Sprite):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
+            self.image = self.w_boat
             self.vx = -PLAYER_SPEED
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.image = self.e_boat
             self.vx = PLAYER_SPEED
         if keys[pg.K_UP] or keys[pg.K_w]:
+            self.image = self.n_boat
             self.vy = -PLAYER_SPEED
         if keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.image = self.s_boat
             self.vy = PLAYER_SPEED
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071

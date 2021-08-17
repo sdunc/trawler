@@ -13,24 +13,19 @@ def random_nxn(n):
 
 #print(random_nxn(5))
 
+def flip(p):
+    return True if random.random() < p else False
+
+
 def fill_bools(n,m,fill=FILL):
     # fill an nxn matrix will True and False
     # maintn close to fill as a ratio
     bools = []
-    no_falses =int(n*m*fill)
 
-    pool = []
-    for i in range(no_falses):
-        pool.append(False)
-    for i in range(int(n*m-no_falses)):
-        pool.append(True)
-    random.shuffle(pool)
-
-    # fill an nxn array with Trues
     for rows in range(n):
         t = []
         for cols in range(m):
-            t.append(pool.pop())
+            t.append(flip(fill))
         bools.append(t)
 
     return bools

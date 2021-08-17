@@ -10,6 +10,11 @@ class Game:
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
+        # load in sprites into global scope for player ship
+        n_boat = pg.image.load('n_boat.png').convert_alpha()
+        s_boat = pg.image.load('s_boat.png').convert_alpha()
+        e_boat = pg.image.load('e_boat.png').convert_alpha()
+        w_boat = pg.image.load('w_boat.png').convert_alpha()
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()

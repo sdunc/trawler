@@ -158,3 +158,8 @@ class PerlinNoiseFactory(object):
             ret = r * 2 - 1
 
         return ret
+
+
+
+
+

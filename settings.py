@@ -1,9 +1,9 @@
 
 
 from os import path# define some colors (R, G, B)
-STEPS = 3
+STEPS = 2
 STEPS2 = 2
-FILL = 0.53# water fill or
+FILL = 0.5# water fill
 
 
 WHITE = (255, 255, 255)
