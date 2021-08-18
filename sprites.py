@@ -1,28 +1,46 @@
 import pygame as pg
 from settings import *
 from tmath import *
-from perlin import *
-#from main import n_boat
+
+
+
+def rot_center(image, angle, x, y):
+    
+    rotated_image = pygame.transform.rotate(image, angle)
+    new_rect = rotated_image.get_rect(center = image.get_rect(center = (x, y)).center)
+
+    return rotated_image, new_rect
+
+def blitRotateCenter(surf, image, topleft, angle):
+
+    rotated_image = pygame.transform.rotate(image, angle)
+    new_rect = rotated_image.get_rect(center = image.get_rect(topleft = topleft).center)
+
+    surf.blit(rotated_image, new_rect)
+
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self._layer = 2 # fg 
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
         self.groups = game.all_sprites
         self.n_boat = pg.image.load('n_boat.png').convert_alpha()
         self.s_boat = pg.image.load('s_boat.png').convert_alpha()
         self.e_boat = pg.image.load('e_boat.png').convert_alpha()
         self.w_boat = pg.image.load('w_boat.png').convert_alpha()
-
         self.image = self.n_boat
         self.rect = self.image.get_rect(center=(x,y))
+        self.rect = pg.Rect(self.rect.left/2, self.rect.top/2, \
+                                self.rect.width/2, self.rect.height/2)
+
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        #self.image = pg.Surface((TILESIZE, TILESIZE))
-        #self.image.fill(WHITE)
-        #self.rect = self.image.get_rect()
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        # self.image.fill(WHITE)
+        # self.rect = self.image.get_rect()
         self.vx, self.vy = 0, 0
-        self.x = x * TILESIZE
-        self.y = y * TILESIZE
+
         self.on_ocean = False
 
     def get_keys(self):
@@ -68,6 +86,8 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.get_keys()
+        # TODO: turn sprite based on angle
+        #print(self.vx,self.vy)
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.x = self.x

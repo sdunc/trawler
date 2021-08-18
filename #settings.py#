@@ -22,7 +22,8 @@ L8 = .95
 
 # Colors (r,g,b)
 WHITE = (255, 255, 255) 
-ORANGE_FONT = (253,169,41) # text has a se 1px black border
+ORANGE_FONT =
+(253,169,41) # text has a se 1px black border
 BLACK = (255,255,255)
 
 SHALLOW = (148,160,185)#94A0B9

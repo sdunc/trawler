@@ -3,38 +3,37 @@ import sys
 from os import path
 from settings import *
 from sprites import *
-from noise import *
+#from noise import *
+from mapgen import *
+from tilemap import *
 
 class Game:
     def __init__(self):
+        # create the pygame game object with constants defined in
+        # settings.py
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
-        # load in sprites into global scope for player ship
-        n_boat = pg.image.load('n_boat.png').convert_alpha()
-        s_boat = pg.image.load('s_boat.png').convert_alpha()
-        e_boat = pg.image.load('e_boat.png').convert_alpha()
-        w_boat = pg.image.load('w_boat.png').convert_alpha()
+        # n_boat = pg.image.load('n_boat.png').convert_alpha()
+        # s_boat = pg.image.load('s_boat.png').convert_alpha()
+        # e_boat = pg.image.load('e_boat.png').convert_alpha()
+        # w_boat = pg.image.load('w_boat.png').convert_alpha()
         self.clock = pg.time.Clock()
-        pg.key.set_repeat(500, 100)
-        self.load_data()
-        self.map_data = []
+        pg.key.set_repeat(KEY_DELAY, KEY_REPEAT_DELAY)
+        self.make_new_map()
+        self.load_data() # load map.txt into self.map_data
 
     def load_data(self):
+        # create a new map object
         game_folder = path.dirname(__file__)
-        self.map_data = []
+        self.map = Map(path.join(game_folder, 'map.txt'))
         
-        # then open it
-        with open(path.join(game_folder, 'map.txt'), 'rt') as f:
-           for line in f:
-                self.map_data.append(line)
-
-
     def make_new_map(self):
-        return  get_map() #generate a new map quick
+        # generate a new map
+        #return  get_map() #generate a new map quick
+        #get_pmap()
+        get_map()
 
-
-        
     def new(self):
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.LayeredUpdates()
@@ -49,9 +48,9 @@ class Game:
         # iterate over the index value
         # TODO stephen: have tiles go into a lookup table to make
         # quick n robust maps
-        for i in range(len(self.map_data)):
-            for j in range(len(self.map_data[0])):
-                tile = self.map_data[i][j]
+        for i in range(self.map.tileheight):
+            for j in range(self.map.tilewidth):
+                tile = self.map.data[i][j]
                 if tile == "1":
                     Land(self, i, j, 1)
                 elif tile == '2':
@@ -68,11 +67,13 @@ class Game:
                     Land(self,i,j,7)
                 elif tile == '8':
                     Land(self,i,j,8)
-                #elif tile == '0':
-                #    Ocean(self,i,j)
+                elif tile == '9':
+                    Land(self,i,j,9)
                 elif tile == 'P':
                     self.player = Player(self, i,j)
-        
+
+            self.camera = Camera(self.map.width, self.map.height)
+
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
@@ -91,6 +92,7 @@ class Game:
         # displayed at the right z level.
         # TODO: Add z levels for real
         self.all_sprites.update()
+        self.camera.update(self.player)
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -98,10 +100,12 @@ class Game:
         for y in range(0, HEIGHT, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
+            
     def draw(self):
         self.screen.fill(OBLUE)
         #self.draw_grid()
-        self.all_sprites.draw(self.screen)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
         pg.display.flip()
 
     def events(self):
